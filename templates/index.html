@@ -3,27 +3,42 @@
 {% endblock %} {% block body %}
 <div class="content">
   <h1>Task Blaster</h1>
+  {% if tasks | length < 1 %}
+  <h3>No tasks yet! Add one below.</h3>
+  {% else %}
   <table>
     <tr>
       <th>Task</th>
       <th>Due Date</th>
-      <th>Priority</th>
+      <th>Actions</th>
     </tr>
+    {% for task in tasks %}
     <tr>
-      <td>Content</td>
-      <td>Data</td>
-      <td>More</td>
+      <td>{{ task.title }}</td>
+      <td>{{ task.created_at.strftime("%Y-%m-%d") }}</td>
+      <td>
+        <a href="{{ url_for('delete_task', task_id=task.id) }}">Delete</a>
+        <a href="{{ url_for('update_task', task_id=task.id) }}">Update</a>
+      </td>
     </tr>
+    {% endfor %}
   </table>
-  <form action="">
-    <input type="text " name="task" id="task" />
-    <input type="date" name="due_date" id="due_date" />
-    <select name="priority" id="priority">
+  {% endif %}
+  <form action="{{ url_for('add_task') }}" method="POST">
+    <input
+      type="text"
+      name="task"
+      id="task"
+      placeholder="Task Title"
+      required
+    />
+    <input type="date" name="due_date" id="due_date" required />
+    <select name="priority" id="priority" required>
       <option value="low">Low</option>
       <option value="medium">Medium</option>
       <option value="high">High</option>
     </select>
-    <button type="button">Add Task</button>
+    <button type="submit">Add Task</button>
   </form>
 </div>
 {% endblock %}
